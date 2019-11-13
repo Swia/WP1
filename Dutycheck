@@ -1,0 +1,341 @@
+
+
+LANGUAGE=VBSCRIPT
+
+'Swia mac*
+
+sub Dutyinform21_(ObjPCom)
+
+Dim url, objXml, objSrvHTTP, Dutylist, fso5, SaveStringToFile, objFile, objFSO, outFile
+Const SXH_SERVER_CERT_IGNORE_ALL_SERVER_ERRORS = 13056
+Set objSrvHTTP = CreateObject("Msxml2.ServerXMLHTTP.6.0")
+Set objFSO=CreateObject("Scripting.FileSystemObject")
+   
+   url = "" 
+   objSrvHTTP.open "GET", url
+   objSrvHTTP.setOption(2) = SXH_SERVER_CERT_IGNORE_ALL_SERVER_ERRORS 'bypass ssl check
+   objSrvHTTP.send
+   objXML = objSrvHTTP.responseText
+   outFile="c:\Dutylist.txt"
+	Set objFile = objFSO.CreateTextFile(outFile,True)
+	objFile.Write objSrvHTTP.responseText & vbCrLf
+	objFile.Close
+end sub
+
+Call subSub4_(autECLSession.autECLPS)
+sub subSub4_(ObjPCom)
+
+	Dim duty, fso5, List5, i, j, k, l,  strLine, queue, dutytel, dutyname, dutyname2
+	Dim inform2, mvsPlatform, length, inform, rrcname, rcmscall,day, queuet, q, WD 
+	Set FSO5 = CreateObject("Scripting.FileSystemObject") 
+	Set List5 = fso5.OpenTextFile("c:\Dutylist.txt")
+	
+	WD = Weekday(now(), vbMonday)
+		
+	autECLSession.autECLOIA.WaitForInputReady
+	queue = ObjPCom.GetText(15,48,6)
+	mvsPlatform = ObjPCom.GetText(9,50,3)
+	autECLSession.autECLOIA.WaitForInputReady
+	
+	Select case queue 'select line in  c:\Dutylist.txt
+		case "CMDAFO" 
+		
+		case "FEGSD8"
+		
+		case "CLEDS8"
+			
+		case "CMRMFO" 
+		
+		case "FEGSTA"
+			
+		case "CMMIFO" 
+		
+		case "FEGSDM"
+			
+		case "CMSAFO"
+
+		case "FEGSST"
+		
+		case "CLESAN"
+			
+		case "CMRSFO"
+
+		case "FEGPWP"
+			
+		case "CMASFO"
+
+		case "FEGPWI"		
+			
+		case "CMPSFO"
+
+		case "CMPOFO"	
+			
+		case "CMLSFO" 
+			
+		case "RUCMC1"
+
+		case "CMMVFO"
+		
+		case else
+		autECLSession.autECLOIA.WaitForInputReady
+		   rcmscall = ObjPCom.GetText(3,59,7)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "row",22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   rrcname = ObjPCom.GetText(5,13,20)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf4]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "cr," & rcmscall,22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf12]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "42",21,04
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady  
+		   
+		   If ObjPCom.GetText(17,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",17,4
+		   Elseif ObjPCom.GetText(16,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",16,4
+		   Elseif ObjPCom.GetText(15,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",15,4	
+		   Else MsgBox ("Error")
+				exit sub
+		   end if
+		   
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys rrcname,6,4
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "*** DUTY FO WAS INFORMED ***",9,4
+		   autECLSession.autECLOIA.WaitForInputReady 
+		   autECLSession.autECLPS.SendKeys "TIME STAMP: " & Time & " (Moscow time)",10,4
+		   autECLSession.autECLOIA.WaitForInputReady
+		Exit Sub
+	End Select	
+	
+	
+			
+	Do While NOT List5.AtEndOfStream 'Sozdanie informatsii o dedzurnom iz strochki
+		strLine = List5.ReadLine
+		queuet = right(strLine,11) 
+		queuet = left(queuet,6)
+		
+		IF (queuet = "CMDAFO") AND (queue = "CMDAFO")  then '1
+			j = i + 12
+			
+		ElseIF (queuet = "FEGSD8") AND (queue = "FEGSD8")  then
+			j = i + 11	
+			
+		ElseIF (queuet = "CLEDS8") AND (queue = "CLEDS8")  then
+			j = i + 10		
+			
+		ElseIF(queuet = "CMRMFO") AND (queue = "CMRMFO")  then '2 
+			j = i + 12
+			
+		ElseIF (queuet = "FEGSTA") AND (queue = "FEGSTA")  then
+			j = i + 11	
+			
+		ElseIF (queuet = "CLERMS") AND (queue = "CLERMS")  then
+			j = i + 10		
+			
+		ElseIF (queuet = "CMMIFO") AND (queue = "CMMIFO")  then '3 
+			j = i + 12
+			
+		ElseIF (queuet = "FEGSDM") AND (queue = "FEGSDM")  then
+			j = i + 11	
+			
+		ElseIF (queuet = "CMSAFO") AND (queue = "CMSAFO")  then'4
+			j = i + 12
+			
+		ElseIF (queuet = "FEGSST") AND (queue = "FEGSST")  then
+			j = i + 11		
+			
+		ElseIF (queuet = "CLESAN") AND (queue = "CLESAN")  then
+			j = i + 10			
+		
+		ElseIF (queuet = "CMRSFO") AND (queue = "CMRSFO")  then'5
+			j = i + 12
+			
+		ElseIF (queuet = "FEGPWP") AND (queue = "FEGPWP")  then
+			j = i + 11	
+			
+		ElseIF (queuet = "CMASFO") AND (queue = "CMASFO")  then'6
+			j = i + 12
+			
+		ElseIF (queuet = "FEGPWI") AND (queue = "FEGPWI")  then
+			j = i + 11	
+
+		ElseIF ((queuet = "CMPSFO") AND (queue = "CMPSFO")) AND (( Time >= #12:00:00# ) AND ( Time < #23:59:59# )) Then 'Vibor dedzurnogo AM or PM '7
+			j = i + 20
+			
+		ElseIf  ((queuet = "CMPSFO") AND (queue = "CMPOFO")) AND (( Time >= #12:00:00# ) AND ( Time < #23:59:59# ))  Then 'Vibor dedzurnogo AM or PM
+			j = i + 20	
+			
+		ElseIf ((queuet = "CMPSFO") AND (queue = "CMPSFO")) AND (( Time >= #00:00:00# ) AND ( Time < #12:00:00# ))  Then
+			j = i + 12
+			
+		ElseIf ((queuet = "CMPSFO") AND (queue = "CMPOFO")) AND (( Time >= #00:00:00# ) AND ( Time < #12:00:00# ))  Then
+			j = i + 12 	
+			
+		ElseIF (queuet = "CMLSFO") AND (queue = "CMLSFO")  then'8
+			j = i + 12	
+
+		ElseIF (queuet = "RUCMC1") AND (queue = "RUCMC1")  then'9
+			j = i + 12	
+			
+		ElseIF (queuet = "CMMVFO") AND (queue = "CMMVFO") AND ((mvsPlatform = "HEW") or (mvsPlatform = "DEL"))  then'10
+			j = i + 12
+			
+		ElseIF (queuet = "CMMVFO") AND (queue = "CMMVFO") AND (mvsPlatform = "EMC")  then
+			j = i + 28	
+			
+		ElseIF (queuet = "CMMVFO") AND (queue = "CMMVFO") AND ((mvsPlatform = "SUN") or (mvsPlatform = "ORA"))  then
+			j = i + 20
+			
+		ElseIF ((queuet = "CMMVFO") AND (queue = "CMMVFO") AND (mvsPlatform = "HIT"))  then
+			j = i + 36
+		
+		ElseIf ObjPCom.GetText(3,59,1) = " " Then
+			MsgBox "Please choose the RCMS call to inform"	
+		Exit sub
+		
+			Else
+		End IF
+
+		If i = j - 1 then
+			length = len(strLine) - 5 
+			dutyname = mid(strLine,52,length - 52) 
+			
+		
+		Elseif i = j then
+			dutytel = mid(strLine,52,12)
+		
+		End IF
+		i = i + 1 
+	loop
+	List5.Close	
+	
+	inform2 = MsgBox("Today on Duty :    "& dutyname & Chr(10) &"Tel.number:   "& dutytel & Chr(10) & "Press <Yes> to inform current Duty FO" &_
+	Chr(10) & "Press <No> to inform another Duty FO" & Chr(10) & "Press <Cancel> to cancel inform" , vbYesNoCancel, "INFROM")
+	
+	Select Case inform2
+		Case vbYes
+		   autECLSession.autECLOIA.WaitForAppAvailable
+		   autECLSession.autECLOIA.WaitForInputReady
+		   rcmscall = ObjPCom.GetText(3,59,7)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "row",22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   rrcname = ObjPCom.GetText(5,13,20)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf4]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "cr," & rcmscall,22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf12]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "42",21,04
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady  
+		   
+		   If ObjPCom.GetText(17,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",17,4
+		   Elseif ObjPCom.GetText(16,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",16,4
+		   Elseif ObjPCom.GetText(15,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",15,4	
+		   Else MsgBox ("Error")
+				exit sub
+		   end if
+		   
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys rrcname,6,4
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "*** DUTY FO WAS INFORMED ***",9,4
+		   autECLSession.autECLOIA.WaitForInputReady 
+		   autECLSession.autECLPS.SendKeys "TIME STAMP: " & Time & " (Moscow time)",10,4
+		   autECLSession.autECLOIA.WaitForInputReady 
+		   autECLSession.autECLPS.SendKeys dutyname & " " & dutytel,11,4
+		   autECLSession.autECLOIA.WaitForInputReady 
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		Case vbNo
+		   autECLSession.autECLOIA.WaitForAppAvailable
+		   autECLSession.autECLOIA.WaitForInputReady
+		   rcmscall = ObjPCom.GetText(3,59,7)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "row",22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   rrcname = ObjPCom.GetText(5,13,20)
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf4]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "cr," & rcmscall,22,8
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "[pf12]"
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "42",21,04
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady  
+		   
+		   If ObjPCom.GetText(17,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",17,4
+		   Elseif ObjPCom.GetText(16,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",16,4
+		   Elseif ObjPCom.GetText(15,7,1) = "P" then
+				autECLSession.autECLOIA.WaitForInputReady   
+				autECLSession.autECLPS.SendKeys "5",15,4	
+		   Else MsgBox ("Error")
+				exit sub
+		   end if
+		   
+		   autECLSession.autECLOIA.WaitForInputReady   
+		   autECLSession.autECLPS.SendKeys "[enter]"
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys rrcname,6,4
+		   autECLSession.autECLOIA.WaitForInputReady
+		   autECLSession.autECLPS.SendKeys "*** DUTY FO WAS INFORMED ***",9,4
+		   autECLSession.autECLOIA.WaitForInputReady 
+		   autECLSession.autECLPS.SendKeys "TIME STAMP: " & Time & " (Moscow time)",10,4
+		   autECLSession.autECLOIA.WaitForInputReady      
+		   autECLSession.autECLPS.SendKeys "[TAB]"
+		Case vbCancel
+			Exit Sub
+	End Select
+	
+	
+ end sub  
+
